@@ -7,9 +7,6 @@ on:
   # Kjør også når du pusher kode til main
   push:
     branches: ["main"]
-  # Kjør også når du pusher kode til main
-  push:
-    branches: ["main"]
 
 permissions:
   contents: read
