@@ -34,10 +34,10 @@ jobs:
 
       - name: Run pipeline
         run: |
-          uv run python -m ingestion.fetch_activities
-          uv run python -m processing.bronze_to_silver
-          uv run python -m processing.silver_to_gold
-          uv run python -m viz.build_site
+          uv run python -m src.ingestion.fetch_activities
+          uv run python -m src.processing.bronze_to_silver
+          uv run python -m src.processing.silver_to_gold
+          uv run python -m src.viz.build_site
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
