@@ -9,7 +9,12 @@
     body { font-family: system-ui, -apple-system, sans-serif; margin: 20px; }
     h1 { font-size: 1.8rem; }
     .chart-container { max-width: 900px; margin-top: 40px; }
-     canvas { width: 100%; height: 400px; }
+    canvas { width: 100%; height: 400px; }
+    table { width: 100%; margin-top: 40px; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background-color: #f2f2f2; font-weight: bold; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    tr:hover { background-color: #f0f0f0; }
   </style>
 </head>
 <body>
@@ -19,6 +24,22 @@
   <div class="chart-container">
     <canvas id="weeklyDistanceChart"></canvas>
   </div>
+
+  <h2 style="margin-top: 40px;">Activities</h2>
+  <table id="activitiesTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Distance (km)</th>
+        <th>Time (min)</th>
+        <th>Avg Speed (m/s)</th>
+        <th>Max Speed (m/s)</th>
+        <th>Elevation Gain (m)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
     async function loadData() {
@@ -68,7 +89,32 @@
       });
     }
 
+    async function loadActivities() {
+      const res = await fetch("assets/activities.json");
+      const activities = await res.json();
+      
+      const tbody = document.querySelector("#activitiesTable tbody");
+      
+      activities.forEach(activity => {
+        const row = document.createElement("tr");
+        const date = new Date(activity.date);
+        const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+        
+        row.innerHTML = `
+          <td>${dateStr}</td>
+          <td>${activity.name}</td>
+          <td>${(activity.distance_km).toFixed(2)}</td>
+          <td>${Math.round(activity.moving_time_min)}</td>
+          <td>${(activity.average_speed).toFixed(2)}</td>
+          <td>${(activity.max_speed).toFixed(2)}</td>
+          <td>${Math.round(activity.total_elevation_gain)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
     loadData();
+    loadActivities();
   </script>
 </body>
 </html>
