@@ -42,11 +42,26 @@
   </table>
 
   <script>
+    // Convert ISO week number to a date (Monday of that week)
+    function getDateFromWeek(year, week) {
+      const simple = new Date(year, 0, 1 + (week - 1) * 7);
+      const dow = simple.getDay();
+      const ISOweekStart = simple;
+      if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+      else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+      return ISOweekStart;
+    }
+
     async function loadData() {
       const res = await fetch("assets/progression_weekly.json");
       const data = await res.json();
 
-      const labels = data.map(d => d.year_week);
+      const labels = data.map(d => {
+        const date = getDateFromWeek(d.year, d.week);
+        return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" });
+      });
       const distances = data.map(d => d.total_distance_km);
 
       const ctx = document.getElementById("weeklyDistanceChart").getContext("2d");
