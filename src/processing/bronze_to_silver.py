@@ -17,7 +17,7 @@ def bronze_to_silver():
     bronze_file = get_latest_bronze_file()
     df = pl.read_parquet(bronze_file)
 
-    # Sjekk gjerne én gang hva kolonner faktisk heter:
+    # Optionally check once what the column names actually are:
     # print(df.columns)
 
     df_run = (

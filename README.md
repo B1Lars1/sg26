@@ -1,99 +1,92 @@
-# SG26 - Løpeprogresjon
+# SG26 — Running progress
 
-Et prosjekt for innhenting, prosessering og visualisering av løpedata fra Strava.
+This project ingests, processes and visualizes running activities from Strava.
 
-## Oversikt
+## Overview
 
-Prosjektet følger en **data lakehouse-arkitektur** med tre lag:
+The project follows a simple data lakehouse pattern with three layers:
 
-- **Bronze**: Rådata fra Strava API (JSON og Parquet)
-- **Silver**: Transformert og renset data (Parquet)
-- **Gold**: Aggregert og forretningsklart data (Parquet)
-- **Viz**: Visualisering som HTML-nettsted
+- **Bronze**: Raw activity data from the Strava API (JSON and Parquet)
+- **Silver**: Cleaned and filtered runs (Parquet)
+- **Gold**: Aggregated, business-ready data (Parquet)
+- **Viz**: A small static HTML visualization
 
-## Struktur
+## Project structure
 
 ```
 SG26/
 ├── src/
-│   ├── config.py                    # Sentral konfigurering
+│   ├── config.py                    # Central configuration
 │   ├── ingestion/
-│   │   ├── fetch_activities.py      # Hent data fra Strava API
-│   │   └── strava_auth.py           # Strava autentisering
+│   │   ├── fetch_activities.py      # Fetch activities from Strava
+│   │   └── strava_auth.py           # Strava authentication helper
 │   ├── processing/
-│   │   ├── bronze_to_silver.py      # Bronze → Silver transformasjon
-│   │   └── silver_to_gold.py        # Silver → Gold aggregering
+│   │   ├── bronze_to_silver.py      # Bronze -> Silver transformation
+│   │   └── silver_to_gold.py        # Silver -> Gold aggregation
 │   └── viz/
-│       └── build_site.py            # Bygg HTML-nettsted
+│       └── build_site.py            # Build the static site
 ├── data/
-│   ├── bronze/                      # Rådata fra Strava
-│   ├── silver/                      # Renset løpedata
-│   └── gold/                        # Aggregert ukesdata
+│   ├── bronze/                      # Raw data
+│   ├── silver/                      # Cleaned runs
+│   └── gold/                        # Aggregated weekly data
 ├── site/
-│   ├── index.html                   # Hovedside
+│   ├── index.html                   # Static site
 │   └── assets/
-│       └── progression_weekly.json   # Ukesdata som JSON
-├── pyproject.toml                   # Prosjektkonfigurering
+│       └── progression_weekly.json  # JSON used by the frontend
+├── pyproject.toml
 └── README.md
 ```
 
-## Oppsett
+## Setup
 
-### Forutsetninger
+Requirements:
 
 - Python 3.12+
 - `uv` (UV package manager)
 
-### Installasjon
+Install dependencies:
 
-1. Klon repositoriet
-2. Installer dependencies:
-   ```bash
-   uv sync
-   ```
+```bash
+uv sync
+```
 
-3. Opprett `.env`-fil med Strava-autentisering:
-   ```env
-   STRAVA_CLIENT_ID=<din-client-id>
-   STRAVA_CLIENT_SECRET=<din-client-secret>
-   STRAVA_REFRESH_TOKEN=<din-refresh-token>
-   ```
+Create a `.env` file in the repository root with your Strava credentials:
 
-## Bruk
+```env
+STRAVA_CLIENT_ID=<your-client-id>
+STRAVA_CLIENT_SECRET=<your-client-secret>
+STRAVA_REFRESH_TOKEN=<your-refresh-token>
+```
 
-### 1. Hent data fra Strava
+## Usage
+
+Run the pipeline step by step:
+
+1. Fetch raw activities (Bronze):
 
 ```bash
 uv run python -m src.ingestion.fetch_activities
 ```
 
-Dette lagrer rådata i `data/bronze/` som JSON og Parquet.
-
-### 2. Transformér Bronze → Silver
+2. Transform Bronze -> Silver:
 
 ```bash
 uv run python -m src.processing.bronze_to_silver
 ```
 
-Filtrerer ut løpinger og renset data lagres i `data/silver/`.
-
-### 3. Aggreger Silver → Gold
+3. Aggregate Silver -> Gold:
 
 ```bash
 uv run python -m src.processing.silver_to_gold
 ```
 
-Lager ukesaggregater som lagres i `data/gold/`.
-
-### 4. Bygg nettsted
+4. Build the static site (export JSON + create index):
 
 ```bash
 uv run python -m src.viz.build_site
 ```
 
-Genererer `site/index.html` og eksporterer data som JSON til `site/assets/`.
-
-### Kjør hele pipelinen
+You can also run the full sequence in one line:
 
 ```bash
 uv run python -m src.ingestion.fetch_activities && \
@@ -102,40 +95,26 @@ uv run python -m src.processing.silver_to_gold && \
 uv run python -m src.viz.build_site
 ```
 
-## Visning
+## View the site locally
 
-Åpne nettstedet lokalt:
+Start a simple HTTP server from the repo root and open the page:
 
 ```bash
 python -m http.server 8000
+# then visit http://localhost:8000/site/index.html
 ```
 
-Besøk deretter `http://localhost:8000/site/index.html` i nettleseren.
+## Git policy for data
 
-## Git-ignorering
+Data files (`.json`, `.parquet`) are ignored in Git but the directory structure is kept via `.gitkeep` files. This allows the repository to contain the empty folders while preventing sensitive or large data files from being committed.
 
-Alle datafiler (`.json`, `.parquet`) ignoreres av Git, men mappestrukturen bevares gjennom `.gitkeep`-filer. Dette sikrer at prosjektet kan klones og kjøres uten at data-lagrene er fylt.
+## Components
 
-## Komponenter
+- `src/config.py`: path constants and environment variable loading
+- `src/ingestion/`: Strava API ingestion
+- `src/processing/`: transformation pipeline (bronze -> silver -> gold)
+- `src/viz/`: generate the static site and JSON used by the frontend
 
-### `src/config.py`
-Sentral konfigurering med stier og miljøvariabler:
-- `BRONZE_DIR`, `SILVER_DIR`, `GOLD_DIR`
-- `SITE_DIR`, `ASSETS_DIR`
-- Strava-autentisering
-
-### `src/ingestion/`
-Henter aktiviteter fra Strava API og lagrer som JSON og Parquet.
-
-### `src/processing/`
-Transformerer data gjennom lagene:
-- Filtrerer ut løpinger
-- Beregner avstander i km, tid i timer
-- Aggregerer på ukebasis
-
-### `src/viz/`
-Bygger interaktiv HTML-visualisering med Chart.js.
-
-## Lisens
+## License
 
 MIT

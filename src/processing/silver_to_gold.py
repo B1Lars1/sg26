@@ -8,7 +8,7 @@ def silver_to_gold_weekly():
     runs_path = SILVER_DIR / "runs.parquet"
     df = pl.read_parquet(runs_path)
 
-    # For sikkerhets skyld: sjekk dtype
+    # For safety: check dtype
     # print(df.dtypes)
     # print(df.select("start_date_local").head())
 

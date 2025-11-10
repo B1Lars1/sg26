@@ -40,7 +40,7 @@ def save_to_bronze(activities: list[dict]) -> Path:
     json_path = BRONZE_DIR / f"strava_activities_{ts}.json"
     parquet_path = BRONZE_DIR / f"strava_activities_{ts}.parquet"
 
-    # Rå JSON
+    # Raw JSON
     with json_path.open("w", encoding="utf-8") as f:
         json.dump(activities, f)
 

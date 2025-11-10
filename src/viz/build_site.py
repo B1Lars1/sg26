@@ -13,7 +13,7 @@ def export_weekly_to_json():
     
     df = pl.read_parquet(weekly_path)
 
-    # Lag en enkel label per uke, f.eks. "2025-W12"
+    # Create a simple label per week, e.g. "2025-W12"
     df = df.with_columns(
         pl.format("{}-W{}", "year", "week").alias("year_week")
     )
@@ -42,22 +42,22 @@ def ensure_index_html():
         return
 
     html = """<!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Løpeprogresjon</title>
+  <title>Running Progress</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
+    <style>
     body { font-family: system-ui, -apple-system, sans-serif; margin: 20px; }
     h1 { font-size: 1.8rem; }
     .chart-container { max-width: 900px; margin-top: 40px; }
-    canvas { width: 100%%; height: 400px; }
+    canvas { width: 100%; height: 400px; }
   </style>
 </head>
 <body>
-  <h1>Løpeprogresjon</h1>
-  <p>Km per uke, basert på Garmin-data via Strava.</p>
+  <h1>Running Progress</h1>
+  <p>Km per week, based on Garmin data via Strava.</p>
 
   <div class="chart-container">
     <canvas id="weeklyDistanceChart"></canvas>
@@ -76,8 +76,8 @@ def ensure_index_html():
         type: "line",
         data: {
           labels: labels,
-          datasets: [{
-            label: "Km per uke",
+            datasets: [{
+            label: "Km per week",
             data: distances,
             fill: false,
             tension: 0.3
@@ -91,7 +91,7 @@ def ensure_index_html():
           },
           scales: {
             x: {
-              title: { display: true, text: "Uke" }
+              title: { display: true, text: "Week" }
             },
             y: {
               title: { display: true, text: "Km" }

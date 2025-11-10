@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Løpeprogresjon</title>
+  <title>Running Progress</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; margin: 20px; }
     h1 { font-size: 1.8rem; }
     .chart-container { max-width: 900px; margin-top: 40px; }
-    canvas { width: 100%%; height: 400px; }
+     canvas { width: 100%; height: 400px; }
   </style>
 </head>
 <body>
-  <h1>Løpeprogresjon</h1>
-  <p>Km per uke, basert på Garmin-data via Strava.</p>
+  <h1>Running Progress</h1>
+  <p>Km per week, based on Garmin data via Strava.</p>
 
   <div class="chart-container">
     <canvas id="weeklyDistanceChart"></canvas>
@@ -33,8 +33,8 @@
         type: "line",
         data: {
           labels: labels,
-          datasets: [{
-            label: "Km per uke",
+            datasets: [{
+            label: "Km per week",
             data: distances,
             fill: false,
             tension: 0.3
@@ -48,7 +48,7 @@
           },
           scales: {
             x: {
-              title: { display: true, text: "Uke" }
+              title: { display: true, text: "Week" }
             },
             y: {
               title: { display: true, text: "Km" }

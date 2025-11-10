@@ -1,10 +1,10 @@
 name: Build run progress site
 
 on:
-  # Kjør en gang daglig (kl 00:00 UTC)
+  # Run once daily (at 00:00 UTC)
   schedule:
     - cron: "0 0 * * *"
-  # Kjør også når du pusher kode til main
+  # Also run when pushing code to main
   push:
     branches: ["main"]
 

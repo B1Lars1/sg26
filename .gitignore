@@ -17,10 +17,10 @@ __pycache__/
 .vscode/
 .idea/
 
-# Miljøvariabler
+# Environment variables
 .env
 
-# Data-lag (bronze / silver / gold) - ignore all files but keep structure
+# Data layers (bronze / silver / gold) - ignore all files but keep structure
 data/bronze/*
 !data/bronze/.gitkeep
 data/silver/*
@@ -28,6 +28,6 @@ data/silver/*
 data/gold/*
 !data/gold/.gitkeep
 
-# Genererte filer i site/assets
+# Generated files in site/assets
 site/assets/*
 !site/assets/.gitkeep
