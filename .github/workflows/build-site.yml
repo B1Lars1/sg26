@@ -1,0 +1,59 @@
+name: Build run progress site
+
+on:
+  # Kjør hver time (juster om du vil)
+  schedule:
+    - cron: "0 * * * *"
+  # Kjør også når du pusher kode til main
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+      STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+      STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install project
+        run: uv sync
+
+      - name: Run pipeline
+        run: |
+          PYTHONPATH=src uv run python -m ingestion.fetch_activities
+          PYTHONPATH=src uv run python -m processing.bronze_to_silver
+          PYTHONPATH=src uv run python -m processing.silver_to_gold
+          PYTHONPATH=src uv run python -m viz.build_site
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
