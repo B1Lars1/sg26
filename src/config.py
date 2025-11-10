@@ -14,7 +14,7 @@ ASSETS_DIR = SITE_DIR / "assets"
 for d in [DATA_DIR, BRONZE_DIR, SILVER_DIR, GOLD_DIR, SITE_DIR, ASSETS_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / ".env", override=False)
 
 STRAVA_CLIENT_ID = os.getenv("STRAVA_CLIENT_ID", "")
 STRAVA_CLIENT_SECRET = os.getenv("STRAVA_CLIENT_SECRET", "")
