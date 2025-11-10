@@ -7,8 +7,8 @@ from pathlib import Path
 import requests
 import polars as pl
 
-from config import BRONZE_DIR
-from ingestion.strava_auth import get_access_token
+from ..config import BRONZE_DIR
+from .strava_auth import get_access_token
 
 ACTIVITIES_URL = "https://www.strava.com/api/v3/athlete/activities"
 

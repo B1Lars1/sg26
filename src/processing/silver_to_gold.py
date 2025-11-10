@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import polars as pl
-from config import SILVER_DIR, GOLD_DIR
+from ..config import SILVER_DIR, GOLD_DIR
 
 
 def silver_to_gold_weekly():

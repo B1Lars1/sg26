@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import polars as pl
-from config import GOLD_DIR, SITE_DIR, ASSETS_DIR
+from ..config import GOLD_DIR, SITE_DIR, ASSETS_DIR
 
 
 def export_weekly_to_json():
     weekly_path = GOLD_DIR / "weekly_progress.parquet"
+    
+    if not weekly_path.exists():
+        print(f"Warning: {weekly_path} not found. Skipping JSON export.")
+        return
+    
     df = pl.read_parquet(weekly_path)
 
     # Lag en enkel label per uke, f.eks. "2025-W12"

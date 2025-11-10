@@ -1,5 +1,5 @@
 import requests
-from config import STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET, STRAVA_REFRESH_TOKEN
+from ..config import STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET, STRAVA_REFRESH_TOKEN
 
 TOKEN_URL = "https://www.strava.com/oauth/token"
 

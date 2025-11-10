@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import polars as pl
 
-from config import BRONZE_DIR, SILVER_DIR
+from ..config import BRONZE_DIR, SILVER_DIR
 
 
 def get_latest_bronze_file() -> Path:

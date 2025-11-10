@@ -21,11 +21,11 @@ __pycache__/
 .env
 
 # Data-lag (bronze / silver / gold)
-run_progress/data/*
-!run_progress/data/.gitkeep
-!run_progress/data/bronze/.gitkeep
-!run_progress/data/silver/.gitkeep
-!run_progress/data/gold/.gitkeep
+data/*
+!data/.gitkeep
+!data/bronze/.gitkeep
+!data/silver/.gitkeep
+!data/gold/.gitkeep
 
 # Genererte filer i site/assets
 site/assets/*
