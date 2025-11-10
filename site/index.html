@@ -90,31 +90,46 @@
     }
 
     async function loadActivities() {
-      const res = await fetch("assets/activities.json");
-      const activities = await res.json();
-      
-      const tbody = document.querySelector("#activitiesTable tbody");
-      
-      activities.forEach(activity => {
-        const row = document.createElement("tr");
-        const date = new Date(activity.date);
-        const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+      try {
+        const res = await fetch("assets/activities.json");
+        if (!res.ok) {
+          console.error("Failed to load activities.json:", res.status);
+          return;
+        }
+        const activities = await res.json();
+        console.log("Loaded activities:", activities.length);
         
-        row.innerHTML = `
-          <td>${dateStr}</td>
-          <td>${activity.name}</td>
-          <td>${(activity.distance_km).toFixed(2)}</td>
-          <td>${Math.round(activity.moving_time_min)}</td>
-          <td>${(activity.average_speed).toFixed(2)}</td>
-          <td>${(activity.max_speed).toFixed(2)}</td>
-          <td>${Math.round(activity.total_elevation_gain)}</td>
-        `;
-        tbody.appendChild(row);
-      });
+        const tbody = document.querySelector("#activitiesTable tbody");
+        if (!tbody) {
+          console.error("Could not find table body element");
+          return;
+        }
+        
+        activities.forEach(activity => {
+          const row = document.createElement("tr");
+          const date = new Date(activity.date);
+          const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+          
+          row.innerHTML = `
+            <td>${dateStr}</td>
+            <td>${activity.name}</td>
+            <td>${(activity.distance_km).toFixed(2)}</td>
+            <td>${Math.round(activity.moving_time_min)}</td>
+            <td>${(activity.average_speed).toFixed(2)}</td>
+            <td>${(activity.max_speed).toFixed(2)}</td>
+            <td>${Math.round(activity.total_elevation_gain)}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Error loading activities:", error);
+      }
     }
 
-    loadData();
-    loadActivities();
+    document.addEventListener("DOMContentLoaded", function() {
+      loadData();
+      loadActivities();
+    });
   </script>
 </body>
 </html>
