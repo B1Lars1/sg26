@@ -20,11 +20,12 @@ __pycache__/
 # Miljøvariabler
 .env
 
-# Data-lag (bronze / silver / gold)
-data/*
-!data/.gitkeep
+# Data-lag (bronze / silver / gold) - ignore all files but keep structure
+data/bronze/*
 !data/bronze/.gitkeep
+data/silver/*
 !data/silver/.gitkeep
+data/gold/*
 !data/gold/.gitkeep
 
 # Genererte filer i site/assets
