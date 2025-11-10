@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <title>Løpeprogresjon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 20px; }
+    h1 { font-size: 1.8rem; }
+    .chart-container { max-width: 900px; margin-top: 40px; }
+    canvas { width: 100%%; height: 400px; }
+  </style>
+</head>
+<body>
+  <h1>Løpeprogresjon</h1>
+  <p>Km per uke, basert på Garmin-data via Strava.</p>
+
+  <div class="chart-container">
+    <canvas id="weeklyDistanceChart"></canvas>
+  </div>
+
+  <script>
+    async function loadData() {
+      const res = await fetch("assets/progression_weekly.json");
+      const data = await res.json();
+
+      const labels = data.map(d => d.year_week);
+      const distances = data.map(d => d.total_distance_km);
+
+      const ctx = document.getElementById("weeklyDistanceChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Km per uke",
+            data: distances,
+            fill: false,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: "index",
+            intersect: false
+          },
+          scales: {
+            x: {
+              title: { display: true, text: "Uke" }
+            },
+            y: {
+              title: { display: true, text: "Km" }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const v = ctx.parsed.y ?? 0;
+                  return v.toFixed(1) + " km";
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
