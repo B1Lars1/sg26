@@ -2,8 +2,8 @@ name: Build run progress site
 
 on:
   # Run once daily (at 00:00 UTC)
-  schedule:
-    - cron: "0 0 * * *"
+  #schedule:
+  #  - cron: "0 0 * * *"
   # Also run when pushing code to main
   push:
     branches: ["main"]
